@@ -1,0 +1,50 @@
+import random
+
+class Associate:
+    def __init__(self, id_number=None):
+        self.id_number = id_number if id_number else self.generate_id()
+        self.clock_in_time = None
+
+    def generate_id(self):
+        return random.randint(1000, 9999)
+
+class LaborCounter:
+    def __init__(self):
+        self.associates = []
+
+    def clock_in(self, id_number=None):
+        associate = next((a for a in self.associates if a.id_number == id_number), None)
+
+        if associate:
+            print(f"Associate {associate.id_number} already has an ID. Clocking in...")
+        else:
+            associate = Associate(id_number)
+            self.associates.append(associate)
+            print(f"New associate with ID {associate.id_number} clocked in!")
+
+        associate.clock_in_time = "Set the actual clock-in time here"
+
+    def display_associates(self):
+        print("\nAssociates:")
+        for associate in self.associates:
+            print(f"ID: {associate.id_number} | Clock-in Time: {associate.clock_in_time}")
+
+def main():
+    labor_counter = LaborCounter()
+
+    while True:
+        choice = input("\nEnter '1' to clock in, '2' to display associates, or 'q' to quit: ")
+
+        if choice == '1':
+            id_number = input("Enter your ID number (press Enter if you don't have one): ")
+            labor_counter.clock_in(id_number)
+        elif choice == '2':
+            labor_counter.display_associates()
+        elif choice.lower() == 'q':
+            print("Quitting the program. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()
