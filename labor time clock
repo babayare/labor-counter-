@@ -1,44 +1,63 @@
 import random
+import datetime
 
 class Associate:
     def __init__(self, id_number=None):
         self.id_number = id_number if id_number else self.generate_id()
+        self.full_name = None
+        self.date_of_birth = None
+        self.place_of_origin = None
+        self.salary = None
         self.clock_in_time = None
+        self.total_hours_worked = 0
 
     def generate_id(self):
-        return random.randint(1000, 9999)
+        return random.randint(10, 999999)
 
 class LaborCounter:
     def __init__(self):
         self.associates = []
 
+    def register_associate(self):
+        associate = Associate()
+        associate.full_name = input("Enter associate's full name: ")
+        associate.date_of_birth = input("Enter associate's date of birth (YYYY-MM-DD): ")
+        associate.place_of_origin = input("Enter associate's place of origin: ")
+        associate.salary = float(input("Enter associate's salary: "))
+        associate.id_number = associate.generate_id()
+        self.associates.append(associate)
+        print(f"Associate {associate.full_name} registered successfully! Your ID number is: {associate.id_number}")
+
     def clock_in(self, id_number=None):
         associate = next((a for a in self.associates if a.id_number == id_number), None)
 
         if associate:
-            print(f"Associate {associate.id_number} already has an ID. Clocking in...")
+            print(f"{associate.full_name} already has an ID. Clocking in...")
         else:
-            associate = Associate(id_number)
-            self.associates.append(associate)
-            print(f"New associate with ID {associate.id_number} clocked in!")
+            print("Associate not found. Registering new associate...")
+            self.register_associate()
+            associate = self.associates[-1]
 
-        associate.clock_in_time = "Set the actual clock-in time here"
+        associate.clock_in_time = datetime.datetime.now()
+        print(f"Clocked in at: {associate.clock_in_time}")
 
     def display_associates(self):
         print("\nAssociates:")
         for associate in self.associates:
-            print(f"ID: {associate.id_number} | Clock-in Time: {associate.clock_in_time}")
+            print(f"ID: {associate.id_number} | Name: {associate.full_name} | Date of Birth: {associate.date_of_birth} | Place of Origin: {associate.place_of_origin} | Salary: {associate.salary} | Clock-in Time: {associate.clock_in_time} | Hours Worked: {associate.total_hours_worked}")
 
 def main():
     labor_counter = LaborCounter()
 
     while True:
-        choice = input("\nEnter '1' to clock in, '2' to display associates, or 'q' to quit: ")
+        choice = input("\nEnter '1' to register associate, '2' to clock in, '3' to display associates, or 'q' to quit: ")
 
         if choice == '1':
+            labor_counter.register_associate()
+        elif choice == '2':
             id_number = input("Enter your ID number (press Enter if you don't have one): ")
             labor_counter.clock_in(id_number)
-        elif choice == '2':
+        elif choice == '3':
             labor_counter.display_associates()
         elif choice.lower() == 'q':
             print("Quitting the program. Goodbye!")
